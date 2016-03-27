@@ -1,6 +1,9 @@
 # Java
 *.class
 
+# Python
+*.pyc
+
 # Intellij
 .idea/
 *.iml
