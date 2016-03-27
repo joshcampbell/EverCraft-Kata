@@ -4,11 +4,13 @@ from mock import MagicMock
 from mock import patch
 
 from evercraft import Character, InvalidAlignmentException, ALIGNMENTS
-from evercraft import roll
+from evercraft import roll, DEFAULT_DAMAGE
 
 # NOTE: Look at all of these redundant property tests! Can we factor this logic
 #       into a mixin or something? Aren't Python's annotations meant to handle
 #       cases like this?
+#
+#       (annotation => decorator)
 
 class DefaultCharacter(unittest.TestCase):
 
@@ -75,10 +77,28 @@ class TestAttacking(unittest.TestCase):
         self.character.attack(self.opponent)
         self.assertEqual(self.opponent.damage.call_count, 1)
 
+    @patch("evercraft.roll", return_value=19)
+    def test_hits_doing_default_damage(self, roll):
+        self.character.attack(self.opponent)
+        self.opponent.damage.assert_called_once_with(DEFAULT_DAMAGE)
+
     @patch("evercraft.roll", return_value=2)
     def test_miss_when_rolling_below_target_ac(self, roll):
         self.character.attack(self.opponent)
         self.assertEqual(self.opponent.damage.call_count, 0)
 
+    @patch("evercraft.roll", return_value=20)
+    def test_critical_hit_does_double_damage(self,roll):
+        self.character.attack(self.opponent)
+        self.opponent.damage.assert_called_once_with(DEFAULT_DAMAGE * 2)
+
 class TestBeingHit(DefaultCharacter):
-    pass
+
+    def test_taking_damage(self):
+        original_hp = self.character.hit_points()
+        damage = DEFAULT_DAMAGE
+        self.character.damage(DEFAULT_DAMAGE)
+        self.assertEqual(self.character.hit_points(), 
+                         original_hp - DEFAULT_DAMAGE)
+
+

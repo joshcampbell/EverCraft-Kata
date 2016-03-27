@@ -2,6 +2,8 @@ import random
 
 ALIGNMENTS = [ "Lawful", "Neutral", "Chaotic" ]
 
+DEFAULT_DAMAGE = 1
+
 class InvalidAlignmentException(Exception):
   pass
 
@@ -41,8 +43,11 @@ class Character:
 
   def attack(self, other):
     result = roll(20)
+    hp_amount = DEFAULT_DAMAGE
+    if result is 20:
+      hp_amount *= 2
     if result >= other.armor_class():
-      other.damage(1)
+      other.damage(hp_amount)
 
   def damage(self, hp_amount):
     self.hit_points(self.hit_points() - hp_amount)
