@@ -4,6 +4,10 @@ ALIGNMENTS = [ "Lawful", "Neutral", "Chaotic" ]
 
 DEFAULT_DAMAGE = 1
 
+DEFAULT_STATS = ["str", "dex", "con", "wis", "int", "cha"]
+
+DEFAULT_STAT_VALUE = 10
+
 class InvalidAlignmentException(Exception):
   pass
 
@@ -13,6 +17,9 @@ def roll(sides):
 class Character:
 
   def __init__(self):
+    self._stats = dict()
+    for name in DEFAULT_STATS:
+      self._stats[name] = DEFAULT_STAT_VALUE
     self.name("Anonymous")
     self.alignment("Neutral")
     self.armor_class(10)
@@ -51,3 +58,13 @@ class Character:
 
   def damage(self, hp_amount):
     self.hit_points(self.hit_points() - hp_amount)
+
+  def stat(self, name, new_val=None):
+    if new_val != None:
+      self._stats[name] = new_val
+    val = self._stats.get(name, None)
+    return val
+
+  def stat_mod(self, name):
+    val = self.stat(name)
+    return (val - 10) / 2

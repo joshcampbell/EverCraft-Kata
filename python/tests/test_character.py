@@ -101,4 +101,37 @@ class TestBeingHit(DefaultCharacter):
         self.assertEqual(self.character.hit_points(), 
                          original_hp - DEFAULT_DAMAGE)
 
+class TestStatRanges(DefaultCharacter):
 
+    def test_stat_modifiers(self):
+        stats = ["str","dex","con","wis","int","cha"]
+        ability_modifiers = {
+            1: -5,
+            2: -4,
+            3: -4,
+            4: -3,
+            5: -3,
+            6: -2,
+            7: -2,
+            8: -1,
+            9: -1,
+            10: 0,
+            11: 0,
+            12: 1,
+            13: 1,
+            14: 2,
+            15: 2,
+            16: 3,
+            17: 3,
+            18: 4,
+            19: 4,
+            20: 5
+        }
+        for stat in stats:
+            for score in range(1,20):
+              self.character.stat(stat,score)
+              self.assertEqual(self.character.stat_mod(stat), 
+                               ability_modifiers[score])
+
+    def test_invalid_stat_access(self):
+      pass
